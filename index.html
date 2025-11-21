@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timestamp Converter & Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        a {
+            color: #333;
+            text-decoration: none;
+            text-align: center;
+          }
+
+        footer {
+            margin-top: 25px; 
+            text-align: center;
+            color: #333;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-unix {
+            background: #667eea;
+        }
+
+        .btn-apple {
+            background: #f5576c;
+        }
+
+        .btn-now {
+            background: #00bcd4;
+        }
+
+        .btn-clear {
+            background: #ff9800;
+        }
+
+        .btn-add {
+            background: #4caf50;
+        }
+
+        .btn-calculate {
+            background: #667eea;
+            grid-column: 1 / -1;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #1565c0;
+            line-height: 1.6;
+        }
+
+        .info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .mode-switch {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: #f0f0f0;
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 20px;
+            background: transparent;
+            color: #666;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-btn:hover:not(.active) {
+            color: #333;
+            transform: none;
+        }
+
+        .timestamp-type {
+            margin-bottom: 20px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .radio-label input[type="radio"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .difference-result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .diff-section {
+            margin-bottom: 20px;
+        }
+
+        .diff-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .diff-title {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .diff-value {
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .diff-breakdown {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .timestamp-entry {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        .timestamp-entries {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏰ TimeGap</h1>
+        <h3>A simple timestamp converter & calculator</h3>
+        <br>
+        <div class="mode-switch">
+            <button class="mode-btn active" id="convertBtn">Convert</button>
+            <button class="mode-btn" id="differenceBtn">Time Difference</button>
+        </div>
+
+        <div id="convertMode">
+            <div class="input-group">
+                <label for="timestampInput">Enter Timestamp</label>
+                <input type="text" id="timestampInput" placeholder="e.g., 1700000000 or 721000000">
+            </div>
+
+            <div class="button-group">
+                <button class="btn-unix" id="convertUnixBtn">Convert Unix</button>
+                <button class="btn-apple" id="convertAppleBtn">Convert Apple/Cocoa Core</button>
+                <button class="btn-now" id="getCurrentBtn">Get Current</button>
+                <button class="btn-clear" id="clearConvertBtn">Clear</button>
+            </div>
+        </div>
+
+        <div id="differenceMode" style="display: none;">
+            <div class="timestamp-type">
+                <label>Timestamp Type:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="diffType" value="unix" checked> Unix
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="diffType" value="apple"> Apple/Cocoa Core
+                    </label>
+                </div>
+            </div>
+
+            <div class="timestamp-entries" id="timestampEntries">
+                <div class="timestamp-entry">
+                    <label>Timestamp 1</label>
+                    <input type="text" class="timestamp-input" placeholder="e.g., 1700000000">
+                </div>
+                <div class="timestamp-entry">
+                    <label>Timestamp 2</label>
+                    <input type="text" class="timestamp-input" placeholder="e.g., 1700086400">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-add" id="addTimestampBtn">Add Timestamp</button>
+                <button class="btn-clear" id="clearDiffBtn">Clear</button>
+                <button class="btn-calculate" id="calculateBtn">Calculate Difference</button>
+            </div>
+        </div>
+
+        <div class="results" id="results" style="display: none;"></div>
+
+        <div class="info">
+            <strong>About Timestamps:</strong>
+            <strong>Unix:</strong> Seconds since January 1, 1970 00:00:00 UTC<br>
+            <strong>Apple:</strong> Seconds since January 1, 2001 00:00:00 UTC
+        </div>
+        <footer>
+            <p>by <a href="https://github.com/thisislola">@thisislola</a> on GitHub &#128062;<p>
+        </footer>
+    </div>
+
+    <script>
+        const APPLE_EPOCH_OFFSET = 978307200;
+
+        // Mode switching
+        document.getElementById('convertBtn').addEventListener('click', function() {
+            document.getElementById('convertMode').style.display = 'block';
+            document.getElementById('differenceMode').style.display = 'none';
+            this.classList.add('active');
+            document.getElementById('differenceBtn').classList.remove('active');
+            clearResults();
+        });
+
+        document.getElementById('differenceBtn').addEventListener('click', function() {
+            document.getElementById('convertMode').style.display = 'none';
+            document.getElementById('differenceMode').style.display = 'block';
+            this.classList.add('active');
+            document.getElementById('convertBtn').classList.remove('active');
+            clearResults();
+        });
+
+        // Convert mode functions
+        document.getElementById('convertUnixBtn').addEventListener('click', function() {
+            const input = document.getElementById('timestampInput').value.trim();
+            if (!input) {
+                alert('Please enter a timestamp');
+                return;
+            }
+
+            const unixTimestamp = parseInt(input);
+            if (isNaN(unixTimestamp)) {
+                alert('Please enter a valid number');
+                return;
+            }
+
+            const date = new Date(unixTimestamp * 1000);
+            displayResults(date, unixTimestamp);
+        });
+
+        document.getElementById('convertAppleBtn').addEventListener('click', function() {
+            const input = document.getElementById('timestampInput').value.trim();
+            if (!input) {
+                alert('Please enter a timestamp');
+                return;
+            }
+
+            const appleTimestamp = parseInt(input);
+            if (isNaN(appleTimestamp)) {
+                alert('Please enter a valid number');
+                return;
+            }
+
+            const unixTimestamp = appleTimestamp + APPLE_EPOCH_OFFSET;
+            const date = new Date(unixTimestamp * 1000);
+            displayResults(date, unixTimestamp);
+        });
+
+        document.getElementById('getCurrentBtn').addEventListener('click', function() {
+            const now = new Date();
+            const unixTimestamp = Math.floor(now.getTime() / 1000);
+            displayResults(now, unixTimestamp);
+            document.getElementById('timestampInput').value = unixTimestamp;
+        });
+
+        document.getElementById('clearConvertBtn').addEventListener('click', function() {
+            document.getElementById('timestampInput').value = '';
+            clearResults();
+        });
+
+        function displayResults(date, unixTimestamp) {
+            const localTime = date.toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            });
+            const localTimeWithMs = `${localTime.split(',').slice(0, -1).join(',')}, ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}.${date.getMilliseconds().toString().padStart(3, '0')}`;
+
+            const utcTime = date.toUTCString();
+            const utcTimeWithMs = `${utcTime.split(':').slice(0, 2).join(':').split(',')[0]}, ${date.getUTCDate()} ${date.toLocaleString('en-US', {month: 'short'})} ${date.getUTCFullYear()} ${date.getUTCHours().toString().padStart(2, '0')}:${date.getUTCMinutes().toString().padStart(2, '0')}:${date.getUTCSeconds().toString().padStart(2, '0')}.${date.getUTCMilliseconds().toString().padStart(3, '0')} GMT`;
+            
+            const appleTimestamp = unixTimestamp - APPLE_EPOCH_OFFSET;
+            const unixMs = date.getTime();
+            const appleMs = unixMs - (APPLE_EPOCH_OFFSET * 1000);
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="result-item">
+                    <div class="result-label">Local Time</div>
+                    <div class="result-value">${localTime}</div>
+                    <div style="font-size: 12px; color: #888; margin-top: 3px;">with ms: ${date.toLocaleString()}.${date.getMilliseconds().toString().padStart(3, '0')}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">UTC Time</div>
+                    <div class="result-value">${utcTime}</div>
+                    <div style="font-size: 12px; color: #888; margin-top: 3px;">with ms: ${utcTimeWithMs}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Unix Timestamp</div>
+                    <div class="result-value">${unixTimestamp} seconds</div>
+                    <div style="font-size: 12px; color: #888; margin-top: 3px;">${unixMs} milliseconds</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Apple Timestamp</div>
+                    <div class="result-value">${appleTimestamp} seconds</div>
+                    <div style="font-size: 12px; color: #888; margin-top: 3px;">${appleMs} milliseconds</div>
+                </div>
+            `;
+            resultsDiv.style.display = 'block';
+        }
+
+        // Difference mode functions
+        document.getElementById('addTimestampBtn').addEventListener('click', function() {
+            const entriesDiv = document.getElementById('timestampEntries');
+            const currentCount = entriesDiv.children.length;
+            
+            const newEntry = document.createElement('div');
+            newEntry.className = 'timestamp-entry';
+            newEntry.innerHTML = `
+                <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
+                <label>Timestamp ${currentCount + 1}</label>
+                <input type="text" class="timestamp-input" placeholder="e.g., 1700000000">
+            `;
+            entriesDiv.appendChild(newEntry);
+        });
+
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            const inputs = document.querySelectorAll('.timestamp-input');
+            const timestamps = [];
+            
+            for (let input of inputs) {
+                const value = input.value.trim();
+                if (value) {
+                    const ts = parseInt(value);
+                    if (isNaN(ts)) {
+                        alert('Please enter valid numbers for all timestamps');
+                        return;
+                    }
+                    timestamps.push(ts);
+                }
+            }
+
+            if (timestamps.length < 2) {
+                alert('Please enter at least 2 timestamps');
+                return;
+            }
+
+            const diffType = document.querySelector('input[name="diffType"]:checked').value;
+            
+            if (diffType === 'apple') {
+                for (let i = 0; i < timestamps.length; i++) {
+                    timestamps[i] += APPLE_EPOCH_OFFSET;
+                }
+            }
+
+            timestamps.sort((a, b) => a - b);
+            
+            let resultsHTML = '<div class="diff-section"><div class="diff-title">Timeline Order</div>';
+            timestamps.forEach((ts, index) => {
+                const date = new Date(ts * 1000);
+                const dateStr = date.toLocaleString();
+                const ms = date.getMilliseconds();
+                resultsHTML += `
+                    <div class="result-item">
+                        <div class="result-label">Timestamp ${index + 1}</div>
+                        <div class="result-value">${dateStr}.${ms.toString().padStart(3, '0')}</div>
+                    </div>
+                `;
+            });
+            resultsHTML += '</div>';
+
+            resultsHTML += '<div class="diff-section"><div class="diff-title">Time Differences</div>';
+            
+            for (let i = 0; i < timestamps.length - 1; i++) {
+                const diff = timestamps[i + 1] - timestamps[i];
+                const breakdown = getTimeBreakdown(diff);
+                
+                resultsHTML += `
+                    <div style="margin-bottom: 15px; padding: 10px; background: white; border-radius: 8px;">
+                        <strong>Between Timestamp ${i + 1} and ${i + 2}:</strong><br>
+                        <div style="font-size: 20px; color: #667eea; font-weight: 700; margin: 5px 0;">
+                            ${diff.toLocaleString()} seconds
+                        </div>
+                        <div style="font-size: 13px; color: #666;">
+                            ${breakdown}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (timestamps.length > 2) {
+                const totalDiff = timestamps[timestamps.length - 1] - timestamps[0];
+                const breakdown = getTimeBreakdown(totalDiff);
+                
+                resultsHTML += `
+                    <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 8px;">
+                        <strong>Total Duration (First to Last):</strong><br>
+                        <div style="font-size: 20px; color: #1565c0; font-weight: 700; margin: 5px 0;">
+                            ${totalDiff.toLocaleString()} seconds
+                        </div>
+                        <div style="font-size: 13px; color: #666;">
+                            ${breakdown}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultsHTML += '</div>';
+
+            document.getElementById('results').innerHTML = resultsHTML;
+            document.getElementById('results').style.display = 'block';
+        });
+
+        function getTimeBreakdown(seconds) {
+            const days = Math.floor(seconds / 86400);
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+
+            const years = Math.floor(days / 365.25);
+            const months = Math.floor(days / 30.44);
+            const weeks = Math.floor(days / 7);
+            
+            const milliseconds = (seconds * 1000) % 1000;
+
+            let parts = [];
+            if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
+            if (months % 12 > 0) parts.push(`${months % 12} month${months % 12 !== 1 ? 's' : ''}`);
+            if (days % 30 > 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+            if (hours > 0) parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`);
+            if (minutes > 0) parts.push(`${minutes} minute${minutes !== 1 ? 's' : ''}`);
+            if (secs > 0 || parts.length === 0) parts.push(`${secs} second${secs !== 1 ? 's' : ''}`);
+
+            const breakdown = parts.join(', ');
+            const totalMs = seconds * 1000;
+            
+            return `${breakdown}<br><span style="font-size: 12px; color: #888;">${totalMs.toLocaleString()} milliseconds</span>`;
+        }
+
+        document.getElementById('clearDiffBtn').addEventListener('click', function() {
+            const entriesDiv = document.getElementById('timestampEntries');
+            entriesDiv.innerHTML = `
+                <div class="timestamp-entry">
+                    <label>Timestamp 1</label>
+                    <input type="text" class="timestamp-input" placeholder="e.g., 1700000000">
+                </div>
+                <div class="timestamp-entry">
+                    <label>Timestamp 2</label>
+                    <input type="text" class="timestamp-input" placeholder="e.g., 1700086400">
+                </div>
+            `;
+            clearResults();
+        });
+
+        function clearResults() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('results').innerHTML = '';
+        }
+
+        document.getElementById('timestampInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('convertUnixBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
